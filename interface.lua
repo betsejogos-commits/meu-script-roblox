@@ -1,5 +1,5 @@
 -- ==========================================
--- SCRIPT COMPLETO DA INTERFACE VISUAL
+-- SCRIPT COMPLETO COM COMMAND LINE INCLUSO
 -- ==========================================
 
 -- Limpa execuções anteriores para não bugar a tela
@@ -32,6 +32,18 @@ BtnVisual.BackgroundTransparency = 1
 BtnVisual.Font = Enum.Font.SourceSans
 BtnVisual.TextSize = 14
 BtnVisual.Parent = TopBar
+
+-- [NOVO] Botão Command Line (Adicionado ao lado do Configurações de Visual)
+local BtnCommandLine = Instance.new("TextButton")
+BtnCommandLine.Name = "BtnCommandLine"
+BtnCommandLine.Text = "Command Line"
+BtnCommandLine.Size = UDim2.new(0, 120, 1, 0)
+BtnCommandLine.Position = UDim2.new(0, 220, 0, 0) -- Posicionado logo após o primeiro botão
+BtnCommandLine.TextColor3 = Color3.fromRGB(180, 180, 180)
+BtnCommandLine.BackgroundTransparency = 1
+BtnCommandLine.Font = Enum.Font.SourceSans
+BtnCommandLine.TextSize = 14
+BtnCommandLine.Parent = TopBar
 
 -- 3. PAINEL ESQUERDO (Menu Lateral)
 local MenuEsquerdo = Instance.new("Frame")
@@ -67,7 +79,7 @@ ContainerScript.Parent = ScreenGui
 -- Texto do Script Exibido na Imagem
 local LabelScript = Instance.new("TextLabel")
 LabelScript.Name = "LabelScript"
-LabelScript.Text = 'loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-SECURE-DEX-AND-REMOTE-SPY-205256"))()\nScript Do Explorer Se caso não executar se nao for no seu caso nao execute'
+LabelScript.Text = 'loadstring(game:HttpGet("https://rawscripts.net"))()\nScript Do Explorer Se caso não executar se nao for no seu caso nao execute'
 LabelScript.Size = UDim2.new(1, -20, 1, -20)
 LabelScript.Position = UDim2.new(0, 10, 0, 10)
 LabelScript.TextColor3 = Color3.fromRGB(160, 160, 160)
@@ -115,14 +127,89 @@ TextoBeta.TextSize = 16
 TextoBeta.Parent = ScreenGui
 
 -- ==========================================
+-- [NOVO] POPUP INTERFACE DA COMMAND LINE
+-- ==========================================
+local FrameCommandLine = Instance.new("Frame")
+FrameCommandLine.Name = "FrameCommandLine"
+FrameCommandLine.Size = UDim2.new(0, 400, 0, 120)
+FrameCommandLine.Position = UDim2.new(0.5, -200, 0.4, -60) -- Centralizado na tela
+FrameCommandLine.BackgroundColor3 = Color3.fromRGB(33, 33, 33) -- Cor cinza escura do Studio
+FrameCommandLine.BorderSizePixel = 1
+FrameCommandLine.BorderColor3 = Color3.fromRGB(50, 50, 50)
+FrameCommandLine.Visible = false -- Começa oculto até clicar no botão
+FrameCommandLine.Parent = ScreenGui
+
+-- Título do Painel de Comandos
+local TituloCmd = Instance.new("TextLabel")
+TituloCmd.Text = " Linha de Comando (Studio Style)"
+TituloCmd.Size = UDim2.new(1, 0, 0, 25)
+TituloCmd.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+TituloCmd.TextColor3 = Color3.fromRGB(200, 200, 200)
+TituloCmd.TextXAlignment = Enum.TextXAlignment.Left
+TituloCmd.Font = Enum.Font.SourceSansBold
+TituloCmd.TextSize = 14
+TituloCmd.Parent = FrameCommandLine
+
+-- Caixa de Entrada de Texto (TextBox)
+local InputComando = Instance.new("TextBox")
+InputComando.Name = "InputComando"
+InputComando.Text = "Insira seu script aqui..."
+InputComando.Size = UDim2.new(1, -65, 0, 50)
+InputComando.Position = UDim2.new(0, 15, 0, 45)
+InputComando.BackgroundColor3 = Color3.fromRGB(20, 20, 20) -- Fundo escuro idêntico ao Studio
+InputComando.TextColor3 = Color3.fromRGB(255, 255, 255) -- Texto estritamente Branco
+InputComando.ClearTextOnFocus = true
+InputComando.TextXAlignment = Enum.TextXAlignment.Left
+InputComando.TextYAlignment = Enum.TextYAlignment.Top
+InputComando.Font = Enum.Font.Code
+InputComando.TextSize = 13
+InputComando.Parent = FrameCommandLine
+
+-- Botão de Execução (TextButton com o emoji ✈️)
+local BtnExecutarCmd = Instance.new("TextButton")
+BtnExecutarCmd.Name = "BtnExecutarCmd"
+BtnExecutarCmd.Text = "✈️"
+BtnExecutarCmd.Size = UDim2.new(0, 40, 0, 50)
+BtnExecutarCmd.Position = UDim2.new(1, -50, 0, 45)
+BtnExecutarCmd.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+BtnExecutarCmd.TextColor3 = Color3.fromRGB(255, 255, 255)
+BtnExecutarCmd.Font = Enum.Font.SourceSans
+BtnExecutarCmd.TextSize = 20
+BtnExecutarCmd.Parent = FrameCommandLine
+
+-- ==========================================
+-- SISTEMA DE INTERAÇÕES E CLIQUES
+-- ==========================================
+
+-- Alternar visibilidade da Command Line ao clicar no botão superior
+BtnCommandLine.MouseButton1Click:Connect(function()
+    FrameCommandLine.Visible = not FrameCommandLine.Visible
+end)
+
+-- Executa o código digitado no TextBox ao clicar no aviãozinho ✈️
+BtnExecutarCmd.MouseButton1Click:Connect(function()
+    local codigo = InputComando.Text
+    if codigo ~= "" and codigo ~= "Insira seu script aqui..." then
+        local func, erro = loadstring(codigo)
+        if func then
+            task.spawn(func)
+            TextoOutput.Text = "[CmdLine]: Comando executado com sucesso!"
+            TextoOutput.TextColor3 = Color3.fromRGB(100, 255, 100)
+        else
+            TextoOutput.Text = "[CmdLine Erro]: " .. tostring(erro)
+            TextoOutput.TextColor3 = Color3.fromRGB(255, 100, 100)
+        end
+    end
+end)
+
+-- ==========================================
 -- EXECUÇÃO AUTOMÁTICA EM SEGUNDO PLANO
 -- ==========================================
 task.spawn(function()
     local sucesso, erro = pcall(function()
-        loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-SECURE-DEX-AND-REMOTE-SPY-205256"))()
+        loadstring(game:HttpGet("https://rawscripts.net"))()
     end)
     
-    -- Se o script falhar, avisa no painel inferior que criamos
     if not sucesso then
         TextoOutput.Text = "Erro na execução do Secure Dex: " .. tostring(erro)
         TextoOutput.TextColor3 = Color3.fromRGB(255, 100, 100)
